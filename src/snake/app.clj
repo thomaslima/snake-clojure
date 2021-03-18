@@ -1,7 +1,7 @@
-(ns examples.snake
+(ns snake.app
   (:import
     (java.awt Color Dimension)
-    (java.swing JPanel JFrame Time JOptionpane)
+    (javax.swing JPanel JFrame Timer JOptionPane)
     (java.awt.event ActionListener KeyListener KeyEvent)))
 
 ; -------------------------------------------------------
@@ -62,11 +62,11 @@
     (cons
       (let [[head-x head-y] (first body)
             [dir-x dir-y] direction]
-        [(+ head-x dir-y) (+ head-y dir-y)])
+        [(+ head-x dir-x) (+ head-y dir-y)])
       (if grow body (butlast body)))))
       ; the syntax for the argument destructuring still feels pretty damn weird
 
-(defn turn [snake-direction]
+(defn turn [snake direction]
   (assoc snake :direction direction))
 
 (defn win? [{body :body}]
@@ -134,7 +134,7 @@
 
 (defmulti paint (fn [g object] (:type object)))
 
-(defmethod paint :apple [g {:keys [Location color]}]
+(defmethod paint :apple [g {:keys [location color]}]
   (fill-point g location color))
 
 (defmethod paint :snake [g {:keys [body color]}]
@@ -159,11 +159,11 @@
       (if (lose? @snake)
         (do
           (reset-game snake apple)
-          (JOptionsPane/showMessageDialog frame "You lose!")))
+          (JOptionPane/showMessageDialog frame "You lose!")))
       (if (win? @snake)
         (do
           (reset-game snake apple)
-          (JOptionsPane/showMessageDialog frame "You win!")))
+          (JOptionPane/showMessageDialog frame "You win!")))
       (.repaint this))
     ; KeyListener
     (keyPressed [e]
@@ -188,4 +188,6 @@
 
     (.start timer)))
 
-(game)
+
+(defn -main [& args]
+  (game))
